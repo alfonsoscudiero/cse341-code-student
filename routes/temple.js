@@ -21,4 +21,22 @@ routes.post('/',
   temples.create
 );
 
+routes.put('/:id',
+  /* #swagger.summary = 'Update a temple by Id' */
+  /* #swagger.description = 'Updates a single temple using its MongoDB _id' */
+  temples.update
+);
+
+routes.delete('/:id',
+  /* #swagger.summary = 'Delete a temple by ID' */
+  /* #swagger.description = 'Deletes from the database a single temple matching the provided temple ID' */
+  temples.delete
+)
+
+routes.delete('/',
+  /* #swagger.summary = 'Delete all temples of database' */
+  /* #swagger.description = 'Deletes complete list of temples from the database' */
+  temples.deleteAll
+)
+
 module.exports = routes;
