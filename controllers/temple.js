@@ -5,24 +5,20 @@ const apiKey =
   'Ezl0961tEpx2UxTZ5v2uKFK91qdNAr5npRlMT1zLcE3Mg68Xwaj3N8Dyp1R8IvFenrVwHRllOUxF0Og00l0m9NcaYMtH6Bpgdv7N';
 
 exports.create = (req, res) => {
-  // Validate request
-  if (!req.body.name) {
-    res.status(400).send({ message: 'Content can not be empty!' });
-    return;
-  }
-
   // Create a Temple
   const temple = new Temple({
     temple_id: req.body.temple_id,
     name: req.body.name,
     description: req.body.description,
     location: req.body.location,
+    dedicated: req.body.dedicated,
+    additionalInfo: req.body.additionalInfo
   });
   // Save Temple in the database
   temple
     .save(temple)
     .then((data) => {
-      res.send(data);
+      res.status(201).send(data);
     })
     .catch((err) => {
       res.status(500).send({
@@ -63,23 +59,26 @@ exports.findAll = (req, res) => {
 // Find a single Temple with an id
 exports.findOne = (req, res) => {
   const temple_id = req.params.temple_id;
-  if (req.header('apiKey') === apiKey) {
-    Temple.find({ temple_id: temple_id })
-      .then((data) => {
-        if (!data)
-          res
-            .status(404)
-            .send({ message: 'Not found Temple with id ' + temple_id });
-        else res.send(data[0]);
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message: 'Error retrieving Temple with temple_id=' + temple_id,
-        });
-      });
-  } else {
-    res.send('Invalid apiKey, please read the documentation.');
+  
+  if (req.header('apiKey') !== apiKey) {
+    return res.status(401).send('Invalid apiKey, please read the documentation.');
   }
+
+  // Use findOne so we either get a document or null (clean 404 logic)
+  Temple.findOne({ temple_id: temple_id })
+    .then((doc) => {
+      if (!doc) {
+        return res.status(404).send({
+          message: `Not found Temple with temple_id=${temple_id}`
+        });
+      }
+      return res.send(doc);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Error retrieving Temple with temple_id=${temple_id}`
+      });
+    });
 };
 
 // Update a Temple by the id in the request
