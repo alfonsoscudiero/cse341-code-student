@@ -19,39 +19,298 @@
           {
             "name": "apiKey",
             "in": "header",
-            "type": "string"
+            "description": "API key required to access this endpoint",
+            "required": true,
+            "type": "string",
+            "example": "YOUR_API_KEY_HERE"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "List of temples returned successfully"
+          },
+          "401": {
+            "description": "Invalid apiKey"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Server error"
           }
         }
       },
       "post": {
         "summary": "Create a new temple",
-        "description": "Creates a new temple and stores it in the database",
+        "description": "Creates a new temple and stores it in the database.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Temple data to create",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
-                  "example": "any"
+                "type": {
+                  "type": "string",
+                  "example": "object"
                 },
-                "temple_id": {
-                  "example": "any"
+                "required": {
+                  "type": "array",
+                  "example": [
+                    "temple_id",
+                    "name",
+                    "location"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
                 },
-                "description": {
-                  "example": "any"
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "temple_id": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "integer"
+                        },
+                        "example": {
+                          "type": "number",
+                          "example": 100
+                        }
+                      }
+                    },
+                    "name": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Caracas Venezuela Temple"
+                        }
+                      }
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Caracas, Venezuela"
+                        }
+                      }
+                    },
+                    "dedicated": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "20 August 2000"
+                        }
+                      }
+                    },
+                    "additionalInfo": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "boolean"
+                        },
+                        "example": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    },
+                    "description": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Granite exterior, one spire with angel Moroni statue. It is located in the Caurimare neighborhood of Caracas."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Temple created successfully"
+          },
+          "422": {
+            "description": "Validation failed (body did not match schema)"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete all temples",
+        "description": "Deletes all temples from the database.",
+        "responses": {
+          "200": {
+            "description": "All temples deleted successfully"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/temples/{temple_id}": {
+      "get": {
+        "summary": "Get a temple by temple_id",
+        "description": "Returns a single temple matching the provided temple_id (numeric).",
+        "parameters": [
+          {
+            "name": "temple_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Numeric temple_id",
+            "example": 28
+          },
+          {
+            "name": "apiKey",
+            "in": "header",
+            "description": "API key required to access this endpoint",
+            "required": true,
+            "type": "string",
+            "example": "YOUR_API_KEY_HERE"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Temple returned successfully"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "404": {
+            "description": "Temple not found"
+          },
+          "422": {
+            "description": "Validation failed (invalid temple_id)"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/temples/{id}": {
+      "put": {
+        "summary": "Update a temple by MongoDB _id",
+        "description": "Updates a single temple using its MongoDB _id. temple_id cannot be updated.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "MongoDB ObjectId (_id)",
+            "example": "61a921f6028954d4f0319e6d"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Temple fields to update (temple_id cannot be updated)",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
                 },
-                "location": {
-                  "example": "any"
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Updated Temple Name"
+                        }
+                      }
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Updated City, Updated Country"
+                        }
+                      }
+                    },
+                    "dedicated": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Renovation"
+                        }
+                      }
+                    },
+                    "additionalInfo": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "boolean"
+                        },
+                        "example": {
+                          "type": "boolean",
+                          "example": false
+                        }
+                      }
+                    },
+                    "description": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Updated description."
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -59,106 +318,47 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete all temples of database",
-        "description": "Deletes complete list of temples from the database",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/temples/{temple_id}": {
-      "get": {
-        "summary": "Get a temple by ID",
-        "description": "Returns a single temple matching the provided temple ID",
-        "parameters": [
-          {
-            "name": "temple_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "apiKey",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/temples/{id}": {
-      "put": {
-        "summary": "Update a temple by Id",
-        "description": "Updates a single temple using its MongoDB _id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
+            "description": "Temple updated successfully"
           },
           "400": {
             "description": "Bad Request"
           },
           "404": {
-            "description": "Not Found"
+            "description": "Temple not found"
+          },
+          "422": {
+            "description": "Validation failed (invalid id or body)"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Server error"
           }
         }
       },
       "delete": {
-        "summary": "Delete a temple by ID",
-        "description": "Deletes a single temple using its MongoDB _id",
+        "summary": "Delete a temple by MongoDB _id",
+        "description": "Deletes a single temple using its MongoDB _id.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "MongoDB ObjectId (_id)",
+            "example": "61a921f6028954d4f0319e6d"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Temple deleted successfully"
           },
           "404": {
-            "description": "Not Found"
+            "description": "Temple not found"
+          },
+          "422": {
+            "description": "Validation failed (invalid id)"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Server error"
           }
         }
       }
