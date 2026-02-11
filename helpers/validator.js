@@ -12,10 +12,14 @@ const validateRequest = (schema, source = 'body') => {
     });
 
     if (error) {
-      return res.status(422).json({
-        message: 'Validation failed',
-        details: error.details.map((d) => d.message)
-      });
+      // Creates a standard JavaScript Error object
+      const err = new Error('Validation failed');
+      err.status = 422; // HTTP status code
+      err.details = error.details.map((d) => d.message); //Joi’s raw validation breakdown
+      err.publicMessage = 'Request body did not match required schema';
+      err.help = 'See /api-docs for request body requirements';
+      // Hands the error to Express and stops running the request
+      return next(err);
     }
 
     // Replace the original request data with the validated data
