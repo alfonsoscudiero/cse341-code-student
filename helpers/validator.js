@@ -1,6 +1,8 @@
 /* ***************************
  *  helpers/validator.js
  * ************************** */
+const createError = require('http-errors');
+
 const validateRequest = (schema, source = 'body') => {
   return (req, res, next) => {
     const payload = req[source];
@@ -12,12 +14,13 @@ const validateRequest = (schema, source = 'body') => {
     });
 
     if (error) {
-      // Creates a standard JavaScript Error object
-      const err = new Error('Validation failed');
-      err.status = 422; // HTTP status code
+      // Error with http-errors
+      const err = createError(422, 'Validation failed');
+
       err.details = error.details.map((d) => d.message); //Joi’s raw validation breakdown
       err.publicMessage = 'Request body did not match required schema';
       err.help = 'See /api-docs for request body requirements';
+
       // Hands the error to Express and stops running the request
       return next(err);
     }
