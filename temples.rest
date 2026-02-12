@@ -1,0 +1,110 @@
+### =========================
+### Environment / Variables
+### =========================
+@baseUrl = http://localhost:8080
+@apiKey = Ezl0961tEpx2UxTZ5v2uKFK91qdNAr5npRlMT1zLcE3Mg68Xwaj3N8Dyp1R8IvFenrVwHRllOUxF0Og00l0m9NcaYMtH6Bpgdv7N
+
+### =========================
+### GET /temples (requires apiKey)
+### =========================
+GET {{baseUrl}}/temples
+apiKey: {{apiKey}}
+
+### GET /temples with invalid apiKey (should return 401 JSON error)
+GET {{baseUrl}}/temples
+apiKey: INVALID_KEY
+
+### =========================
+### GET /temples/:temple_id (requires apiKey)
+### =========================
+# Change 28 to a temple_id that exists in your DB
+GET {{baseUrl}}/temples/28
+apiKey: {{apiKey}}
+
+
+### GET /temples/:temple_id not found (should return 404 JSON error)
+GET {{baseUrl}}/temples/999999
+apiKey: {{apiKey}}
+
+
+### GET /temples/:temple_id invalid (should return 422 from Joi params validation)
+GET {{baseUrl}}/temples/abc
+apiKey: {{apiKey}}
+
+
+### =========================
+### POST /temples
+### (Your current controller does NOT enforce apiKey here unless you added it)
+### =========================
+POST {{baseUrl}}/temples
+Content-Type: application/json
+
+{
+  "temple_id": 100,
+  "name": "Caracas Venezuela Temple",
+  "location": "Caracas, Venezuela",
+  "dedicated": "20 August 2000",
+  "additionalInfo": true,
+  "description": "Granite exterior, one spire with angel Moroni statue. It is located in the Caurimare neighborhood of Caracas."
+}
+
+
+### POST /temples invalid body (should return 422 from Joi body validation)
+POST {{baseUrl}}/temples
+Content-Type: application/json
+
+{
+  "temple_id": "not-a-number",
+  "location": "Missing name on purpose"
+}
+
+
+### =========================
+### PUT /temples/:id  (MongoDB _id)
+### - First, copy a real _id from GET /temples/:temple_id output (or MongoDB)
+### - Your current route validates :id with Joi mongoIdParamSchema
+### =========================
+@mongoId = 61a921f6028954d4f0319e6d
+
+PUT {{baseUrl}}/temples/{{mongoId}}
+Content-Type: application/json
+
+{
+  "name": "Updated Temple Name",
+  "location": "Updated City, Updated Country",
+  "additionalInfo": false,
+  "description": "Updated description."
+}
+
+
+### PUT /temples/:id invalid id (should return 422)
+PUT {{baseUrl}}/temples/NOT_AN_OBJECT_ID
+Content-Type: application/json
+
+{
+  "name": "Should fail"
+}
+
+
+### =========================
+### DELETE /temples/:id  (MongoDB _id)
+### - Your controller returns 204 No Content on success
+### =========================
+DELETE {{baseUrl}}/temples/{{mongoId}}
+
+
+### DELETE /temples/:id invalid id (should return 422)
+DELETE {{baseUrl}}/temples/NOT_AN_OBJECT_ID
+
+
+### =========================
+### DELETE /temples
+### - Your controller returns 204 No Content on success
+### =========================
+DELETE {{baseUrl}}/temples
+
+
+### =========================
+### EXTRA: 404 route test (should return JSON 404 from your global middleware)
+### =========================
+GET {{baseUrl}}/aaaaaaaaaaaaaaaaaaaaaaaaaa
