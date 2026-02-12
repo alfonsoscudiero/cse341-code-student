@@ -199,8 +199,8 @@ routes.delete('/:id',
       example: '61a921f6028954d4f0319e6d'
   } */
 
-  /* #swagger.responses[200] = {
-      description: 'Temple deleted successfully'
+  /* #swagger.responses[204] = {
+      description: 'Temple deleted successfully (no content)'
   } */
 
   /* #swagger.responses[404] = {
@@ -226,8 +226,8 @@ routes.delete('/',
   /* #swagger.summary = 'Delete all temples' */
   /* #swagger.description = 'Deletes all temples from the database.' */
 
-  /* #swagger.responses[200] = {
-      description: 'All temples deleted successfully'
+  /* #swagger.responses[204] = {
+      description: 'All temples deleted successfully (no content)'
   } */
 
   /* #swagger.responses[500] = {
